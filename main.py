@@ -1,6 +1,6 @@
 import os
-import keep_alive
 import time, discord, datetime
+import keep_alive
 from discord.ext import tasks, commands
 
 
@@ -36,6 +36,6 @@ class TaskTime(commands.Cog):
         )
         await channel.send(embed = embed)
 
-bot_token = os.getenv("DC_bot_token")
+bot_token = os.environ['DC_bot_token']
 keep_alive.keep_alive()
 bot.run(bot_token)
