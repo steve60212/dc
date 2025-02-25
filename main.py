@@ -28,14 +28,16 @@ class TaskTime(commands.Cog):
     @tasks.loop(time = everyday_time)
     async def everyday(self):
         # 設定發送訊息的頻道ID
-        channel_id = [1300828046131200081, 1192478035966951606]
-        channel = self.bot.get_channel(channel_id)
-        embed = discord.Embed(
-            title = "🛏 洞三洞洞 部隊起床",
-            description = f"🕛 現在時間 {datetime.date.today()} 03:00",
-            color = discord.Color.orange()
-        )
-        await channel.send(embed = embed)
+        channel_ids = [1300828046131200081, 1192478035966951606]
+        for c_id in channel_ids:
+            channel = self.bot.get_channel(c_id)
+            if channel:
+                embed = discord.Embed(
+                    title = "🛏 洞三洞洞 部隊起床",
+                    description = f"🕛 現在時間 {datetime.date.today()} 03:00",
+                    color = discord.Color.orange()
+                )
+                await channel.send(embed = embed)
 
 class TaskTimes(commands.Cog):
     # 設定整點執行一次函式
@@ -52,7 +54,7 @@ class TaskTimes(commands.Cog):
     @tasks.loop(time = every_hour_time)
     async def every_hour(self):
         # 設定發送訊息的頻道ID
-        channel_id = [1300828046131200081, 1192478035966951606]
+        channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
         tz = datetime.timezone(datetime.timedelta(hours = 8))
         embed = discord.Embed(
