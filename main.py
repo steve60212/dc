@@ -10,7 +10,7 @@ bot = commands.Bot(command_prefix = "$", intents = intents)
 
 @bot.event
 async def on_ready():
-    #await bot.add_cog(TaskTime(bot))
+    await bot.add_cog(TaskTime(bot))
     await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
 
