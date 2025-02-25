@@ -3,6 +3,7 @@ import os
 import discord
 import datetime
 from discord.ext import tasks, commands
+import keep_alive
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix = "$", intents = intents)
@@ -62,4 +63,5 @@ class TaskTimes(commands.Cog):
         await channel.send(embed = embed)
 
 bot_token = os.environ['TOKEN']
+keep_alive.keep_alive()
 bot.run(bot_token)
