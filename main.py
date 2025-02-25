@@ -1,5 +1,4 @@
 import os
-os.system("pip install discord")
 #import time
 import discord
 import datetime
