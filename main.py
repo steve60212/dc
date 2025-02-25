@@ -1,8 +1,10 @@
-import time, discord, datetime
-# 導入discord.ext模組中的tasks工具
-from discord.ext import tasks, commands
 import os
 import keep_alive
+import time, discord, datetime
+from discord.ext import tasks, commands
+
+
+
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix = "$", intents = intents)
 
