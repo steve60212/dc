@@ -1,6 +1,7 @@
 import time, discord, datetime
 # 導入discord.ext模組中的tasks工具
 from discord.ext import tasks, commands
+import os
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix = "$", intents = intents)
@@ -33,4 +34,5 @@ class TaskTime(commands.Cog):
         )
         await channel.send(embed = embed)
 
-bot.run("MTM0Mzc3NTYzNzAyNjExMTUwOQ.GTRkmp.Qmaom4FQ1I3Az1jwqIIBYyqbj_aKKm6_WS7URE")
+bot_token = os.getenv("DC_bot_token")
+bot.run(bot_token)
