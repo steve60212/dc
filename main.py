@@ -1,10 +1,9 @@
 import os
+os.system("pip install discord")
 #import time
 import discord
 import datetime
-import keep_alive
 from discord.ext import tasks, commands
-
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix = "$", intents = intents)
@@ -63,6 +62,5 @@ class TaskTimes(commands.Cog):
         )
         await channel.send(embed = embed)
 
-bot_token = os.environ['DC_bot_token']
-keep_alive.keep_alive()
+bot_token = os.environ['TOKEN']
 bot.run(bot_token)
