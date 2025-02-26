@@ -31,7 +31,7 @@ class TaskTime(commands.Cog):
         for c_id in channel_ids:
             channel = self.bot.get_channel(c_id)
             if channel:
-                now = datetime.now(tz=self.tz) 
+                now = datetime.datetime.now(tz=self.tz) 
                 time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  # 設定時間範圍
                 keyword_found = False
                 async for message in channel.history(limit=100):  # 最多讀取 100 則訊息
@@ -63,9 +63,10 @@ class TaskTimes(commands.Cog):
         channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
         tz = datetime.timezone(timedelta(hours = 8))
-        now = datetime.now(tz=self.tz) 
+        now = datetime.datetime.now(tz=self.tz) 
         time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  # 設定時間範圍
         keyword_found = False
+        
         async for message in channel.history(limit=100):  # 最多讀取 100 則訊息
             if message.created_at >= time_threshold and self.KEYWORD in message.content and not message.author.bot:
                 keyword_found = True
