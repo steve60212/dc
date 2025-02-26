@@ -17,7 +17,7 @@ async def on_ready():
 
 class TaskTime(commands.Cog):
     tz = datetime.timezone(timedelta(hours = 8))
-    everyday_time = datetime.time(hour = 3, minute = 0, second=45 ,tzinfo = tz)
+    everyday_time = datetime.time(hour = 3, minute = 0, second=45 ,tzinfo = datetime.timezone(timedelta(hours = 8)))
     KEYWORD = "洞三洞洞"  
     TIME_LIMIT = 60  # 檢查過去 N 秒內的訊息
 
@@ -47,8 +47,9 @@ class TaskTime(commands.Cog):
                     await channel.send(embed = embed)
 
 class TaskTimes(commands.Cog):
+    tz = datetime.timezone(timedelta(hours = 8))
     every_hour_time = [
-        datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(datetime.timedelta(hours = 8)))
+        datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(timedelta(hours = 8)))
         for i in range(24) for j in range(0,60,2)
     ]
     KEYWORD = "洞三洞洞"  
@@ -71,13 +72,13 @@ class TaskTimes(commands.Cog):
             if message.created_at >= time_threshold and self.KEYWORD in message.content and not message.author.bot:
                 keyword_found = True
                 break
-            if not keyword_found:
-                embed = discord.Embed(
-                    title = "🛏 洞三洞洞 部隊起床",
-                    description = f"🕛 現在時間【{datetime.datetime.now(tz = tz).time().strftime('%H:%M')}】", 
-                    color = discord.Color.random()
-                )
-                await channel.send(embed = embed)
+        if not keyword_found:
+            embed = discord.Embed(
+                title = "🛏 洞三洞洞 部隊起床",
+                description = f"🕛 現在時間【{datetime.datetime.now(tz = self.tz).time().strftime('%H:%M')}】", 
+                color = discord.Color.random()
+            )
+            await channel.send(embed = embed)
 
 
 
