@@ -12,7 +12,7 @@ bot = commands.Bot(command_prefix = "!", intents = intents)
 @bot.event
 async def on_ready():
     await bot.add_cog(TaskTime(bot))
-    #await bot.add_cog(TaskTimes(bot))
+    await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
 
 class TaskTime(commands.Cog):
@@ -45,6 +45,7 @@ class TaskTime(commands.Cog):
                         color = discord.Color.orange()
                     )
                     await channel.send(embed = embed)
+                    await channel.send(file=discord.File("./3am.gif"))
 
 class TaskTimes(commands.Cog):
     tz = datetime.timezone(timedelta(hours = 8))
@@ -80,6 +81,7 @@ class TaskTimes(commands.Cog):
                 color = discord.Color.random()
             )
             await channel.send(embed = embed)
+            await channel.send(file=discord.File("./3am.gif"))
 
 
 
