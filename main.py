@@ -12,7 +12,7 @@ bot = commands.Bot(command_prefix = "!", intents = intents)
 @bot.event
 async def on_ready():
     await bot.add_cog(TaskTime(bot))
-    await bot.add_cog(TaskTimes(bot))
+    #await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
 
 class TaskTime(commands.Cog):
@@ -34,6 +34,7 @@ class TaskTime(commands.Cog):
                 now = datetime.datetime.now(tz=self.tz) 
                 time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  # 設定時間範圍
                 keyword_found = False
+
                 async for message in channel.history(limit=100):  # 最多讀取 100 則訊息
                     if message.created_at >= time_threshold and self.KEYWORD in message.content  and not message.author.bot:
                         keyword_found = True
@@ -64,12 +65,11 @@ class TaskTimes(commands.Cog):
     async def every_hour(self):
         channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
-        tz = datetime.timezone(timedelta(hours = 8))
         now = datetime.datetime.now(tz=self.tz) 
-        time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  # 設定時間範圍
+        time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  
         keyword_found = False
         
-        async for message in channel.history(limit=100):  # 最多讀取 100 則訊息
+        async for message in channel.history(limit=100):  
             if message.created_at >= time_threshold and self.KEYWORD in message.content and not message.author.bot:
                 keyword_found = True
                 await channel.send(f"✅ 發現符合條件的訊息：{message.content} (來自 {message.author})")
