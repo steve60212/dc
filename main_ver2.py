@@ -18,6 +18,8 @@ async def on_ready():
 class TaskTime(commands.Cog):
     tz = datetime.timezone(timedelta(hours = 8))
     everyday_time = datetime.time(hour = 3, minute = 0, tzinfo = datetime.timezone(timedelta(hours = 8)))
+    KEYWORD = "洞三洞洞"  
+    TIME_LIMIT = 80  # 檢查過去 N 秒內的訊息
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -25,17 +27,26 @@ class TaskTime(commands.Cog):
     
     @tasks.loop(time = everyday_time)
     async def everyday(self):
-        channel_ids = [1192478035966951606, 1300828046131200081]
+        channel_ids = [1300828046131200081, 1192478035966951606]
         for c_id in channel_ids:
             channel = self.bot.get_channel(c_id)
             if channel:
-                embed = discord.Embed(
-                    title = "🛏 洞三洞洞 部隊起床",
-                    description = f"🕛 現在時間 【{datetime.datetime.now(tz = self.tz).time().strftime('%H:%M')}】",
-                    color = discord.Color.orange()
-                )
-                await channel.send(embed = embed)
-                await channel.send(file=discord.File("./3am.gif"))
+                now = datetime.datetime.now(tz=self.tz) 
+                time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  # 設定時間範圍
+                keyword_found = False
+
+                async for message in channel.history(limit=100):  # 最多讀取 100 則訊息
+                    if message.created_at >= time_threshold and self.KEYWORD in message.content  and not message.author.bot:
+                        keyword_found = True
+                        break
+                if not keyword_found:
+                    embed = discord.Embed(
+                        title = "🛏 洞三洞洞 部隊起床",
+                        description = f"🕛 現在時間 【{datetime.datetime.now(tz = self.tz).time().strftime('%H:%M')}】",
+                        color = discord.Color.orange()
+                    )
+                    await channel.send(embed = embed)
+                    await channel.send(file=discord.File("./3am.gif"))
 
 class TaskTimes(commands.Cog):
     tz = datetime.timezone(timedelta(hours = 8))
@@ -43,6 +54,8 @@ class TaskTimes(commands.Cog):
         datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(timedelta(hours = 8)))
         for i in range(24) for j in range(0,60,2)
     ]
+    KEYWORD = "洞三洞洞"  
+    TIME_LIMIT = 120  # 檢查過去 N 秒內的訊息
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -52,7 +65,16 @@ class TaskTimes(commands.Cog):
     async def every_hour(self):
         channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
-        if channel:
+        now = datetime.datetime.now(tz=self.tz) 
+        time_threshold = now - timedelta(seconds=self.TIME_LIMIT)  
+        keyword_found = False
+        
+        async for message in channel.history(limit=100):  
+            if message.created_at >= time_threshold and self.KEYWORD in message.content and not message.author.bot:
+                keyword_found = True
+                await channel.send(f"✅ 發現符合條件的訊息：{message.content} (來自 {message.author})")
+                break
+        if not keyword_found:
             embed = discord.Embed(
                 title = "🛏 洞三洞洞 部隊起床",
                 description = f"🕛 現在時間 【{datetime.datetime.now(tz = self.tz).time().strftime('%H:%M')}】", 
