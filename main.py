@@ -25,7 +25,7 @@ class TaskTime(commands.Cog):
     
     @tasks.loop(time = everyday_time)
     async def everyday(self):
-        channel_ids = [1192478035966951606, 1300828046131200081]
+        channel_ids = [1300828046131200081, 1192478035966951606]
         for c_id in channel_ids:
             channel = self.bot.get_channel(c_id)
             if channel:
