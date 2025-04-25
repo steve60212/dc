@@ -6,8 +6,8 @@ from discord.ext import tasks, commands
 import keep_alive
 
 intents = discord.Intents.default()
-intents.messages = True
-bot = commands.Bot(command_prefix = "!", intents = intents)
+intents.message_content = True  # 正確方式
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
