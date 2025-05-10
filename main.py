@@ -12,17 +12,16 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 @bot.event
 async def on_ready():
     await bot.add_cog(TaskTime(bot))
-    #await bot.add_cog(TaskTimes(bot))
+    await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
 
 class TaskTime(commands.Cog):
+    everyday_time = datetime.time(hour=3, minute=0, tzinfo=datetime.timezone(timedelta(hours=8)))
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.everyday.start()
         self.tz = datetime.timezone(timedelta(hours=8))
-        self.everyday_time = datetime.time(hour=3, minute=0, tzinfo=tz)
-
-    @tasks.loop(time=self.everyday_time)
+    @tasks.loop(time=everyday_time)
     async def everyday(self):
         channel_ids = [1300828046131200081, 1192478035966951606]
         today = datetime.datetime.now(tz=self.tz).date()
@@ -50,16 +49,16 @@ class TaskTime(commands.Cog):
                 await channel.send(file=discord.File("./3am.gif"))
 
 class TaskTimes(commands.Cog):
+    every_hour_time = [
+            datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(timedelta(hours = 8)))
+            for i in range(24) for j in range(0,60,2)
+    ]
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.every_hour.start()
         self.tz = datetime.timezone(timedelta(hours = 8))
-        self.every_hour_time = [
-            datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(timedelta(hours = 8)))
-            for i in range(24) for j in range(0,60,2)
-        ]
-    
-    @tasks.loop(time = self.every_hour_time)
+        
+    @tasks.loop(time = every_hour_time)
     async def every_hour(self):
         channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
