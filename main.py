@@ -77,9 +77,9 @@ class TaskTimes(commands.Cog):
             )
 
             if days_left > 0:
-                embed.add_field(name="📅 倒數中", value=f"距離 114514 還剩 {days_left} 天！", inline=False)
+                embed.add_field(name="", value=f"距離 114514 還剩 {days_left} 天！", inline=False)
             elif days_left == 0:
-                embed.add_field(name="🎉 今天就是 114514！", value="哼!哼!啊啊啊啊啊! 這麼臭的日子有存在的必要嗎", inline=False)
+                embed.add_field(name="今天就是 114514！", value="哼!哼!啊啊啊啊啊!\n這麼臭的日子有存在的必要嗎?", inline=False)
             await channel.send(embed = embed)
             await channel.send(file=discord.File("./3am.gif"))
 
