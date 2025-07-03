@@ -17,17 +17,21 @@ async def on_ready():
 
 class TaskTime(commands.Cog):
     everyday_time = datetime.time(hour=3, minute=0, tzinfo=datetime.timezone(timedelta(hours=8)))
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.everyday.start()
         self.tz = datetime.timezone(timedelta(hours=8))
+
     @tasks.loop(time=everyday_time)
     async def everyday(self):
+        await self.send_everyday_message()
+
+    async def send_everyday_message(self):
         channel_ids = [1300828046131200081, 1192478035966951606]
         today = datetime.datetime.now(tz=self.tz).date()
-        target_date = datetime.date(today.year, 5, 14)
-
-        # 計算倒數天數
+        target_date = datetime.date(today.year, 7, 8)
+        days_str = ["四", "三", "二", "一"]
         days_left = (target_date - today).days
 
         for c_id in channel_ids:
@@ -39,14 +43,19 @@ class TaskTime(commands.Cog):
                     color=discord.Color.orange()
                 )
 
-                # 加入倒數或特別訊息
-                if days_left > 0:
-                    embed.add_field(name="", value=f"距離 114514 還剩 {days_left} 天！", inline=False)
+                if days_left > 0 and days_left <= len(days_str):
+                    embed.add_field(name="", value=f"屯懸賞第 {days_str[days_left-1]} 天！", inline=False)
                 elif days_left == 0:
-                    embed.add_field(name="🎉 今天就是 114514！", value="哼！哼！啊啊啊啊啊！\n這麼臭的日子有存在的必要嗎？", inline=False)
+                    embed.add_field(name="🎉 今天「維修前」掃蕩懸賞", value="懸賞維修前掃光光\n哼！哼！啊啊啊啊啊！", inline=False)
 
+                await channel.send(file=discord.File("./wanted.jpg"))
                 await channel.send(embed=embed)
                 await channel.send(file=discord.File("./3am.gif"))
+
+    @commands.command(name='test_everyday')
+    async def test_everyday(self, ctx):
+        await self.send_everyday_message()
+        await ctx.send("✅ 測試訊息已發送！")
 
 class TaskTimes(commands.Cog):
     every_hour_time = [
