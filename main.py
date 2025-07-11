@@ -28,7 +28,7 @@ class TaskTime(commands.Cog):
     async def everyday(self):
         await self.send_everyday_message(self.channel_ids)
 
-    async def send_everyday_message(self, channels_ids):
+    async def send_everyday_message(self, channel_ids):
         today = datetime.datetime.now(tz=self.tz).date()
         target_date = datetime.date(today.year, 7, 29)
         days_str = ["四", "三", "二", "一"]
