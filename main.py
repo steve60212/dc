@@ -22,15 +22,15 @@ class TaskTime(commands.Cog):
         self.bot = bot
         self.everyday.start()
         self.tz = datetime.timezone(timedelta(hours=8))
+        self.channel_ids = [1300828046131200081, 1192478035966951606]
 
     @tasks.loop(time=everyday_time)
     async def everyday(self):
-        await self.send_everyday_message()
+        await self.send_everyday_message(self.channel_ids)
 
-    async def send_everyday_message(self):
-        channel_ids = [1300828046131200081, 1192478035966951606]
+    async def send_everyday_message(self, channels_ids):
         today = datetime.datetime.now(tz=self.tz).date()
-        target_date = datetime.date(today.year, 7, 8)
+        target_date = datetime.date(today.year, 7, 29)
         days_str = ["四", "三", "二", "一"]
         days_left = (target_date - today).days
 
@@ -45,16 +45,19 @@ class TaskTime(commands.Cog):
 
                 if days_left > 0 and days_left <= len(days_str):
                     embed.add_field(name="", value=f"屯懸賞第 {days_str[days_left-1]} 天！", inline=False)
+                    await channel.send(file=discord.File("./wanted.jpg"))
                 elif days_left == 0:
                     embed.add_field(name="🎉 今天「維修前」掃蕩懸賞", value="懸賞維修前掃光光\n哼！哼！啊啊啊啊啊！", inline=False)
+                    await channel.send(file=discord.File("./wanted.jpg"))
 
-                await channel.send(file=discord.File("./wanted.jpg"))
+                
                 await channel.send(embed=embed)
                 await channel.send(file=discord.File("./3am.gif"))
 
     @commands.command(name='test_everyday')
     async def test_everyday(self, ctx):
-        await self.send_everyday_message()
+        test_channel_ids = [1300828046131200081]
+        await self.send_everyday_message(test_channel_ids)
         await ctx.send("✅ 測試訊息已發送！")
 
 class TaskTimes(commands.Cog):
