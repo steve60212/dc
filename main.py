@@ -45,10 +45,10 @@ class TaskTime(commands.Cog):
 
                 if days_left > 0 and days_left <= len(days_str):
                     embed.add_field(name="", value=f"屯懸賞第 {days_str[days_left-1]} 天！", inline=False)
-                    await channel.send(file=discord.File("./wanted.jpg"))
+                    await channel.send(file=discord.File("./wanted2.jpg"))
                 elif days_left == 0:
                     embed.add_field(name="🎉 今天「維修前」掃蕩懸賞", value="懸賞維修前掃光光\n哼！哼！啊啊啊啊啊！", inline=False)
-                    await channel.send(file=discord.File("./wanted.jpg"))
+                    await channel.send(file=discord.File("./wanted2.jpg"))
 
                 
                 await channel.send(embed=embed)
