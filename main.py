@@ -14,7 +14,6 @@ async def on_ready():
     await bot.add_cog(TaskTime(bot))
     #await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
-    start_test()
 
 class TaskTime(commands.Cog):
     everyday_time = datetime.time(hour=3, minute=0, tzinfo=datetime.timezone(timedelta(hours=8)))
@@ -54,12 +53,6 @@ class TaskTime(commands.Cog):
                 
                 await channel.send(embed=embed)
                 await channel.send(file=discord.File("./3am.gif"))
-                
-    async def start_test(self):
-        test_channel_ids = [1300828046131200081]
-        channel = self.bot.get_channel(test_channel_ids)
-        await self.send_everyday_message(test_channel_ids)
-        await channel.send("✅ 機器人已啟動！")
         
     @commands.command(name='test_everyday')
     async def test_everyday(self, ctx):
