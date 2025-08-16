@@ -5,6 +5,7 @@ from datetime import timedelta
 from discord.ext import tasks, commands
 import keep_alive
 from fb_helper import *
+import asyncio
 
 intents = discord.Intents.default()
 intents.message_content = True  # 正確方式
@@ -48,7 +49,22 @@ async def manual_fb_info(ctx, *, url: str = None):
         await ctx.reply(embed=embed)
         return
     
-    await handle_facebook_video(ctx.message, url, delete_original=True)
+    await handle_facebook_video(ctx.message, url, delete_original=False)
+    await asyncio.sleep(2)  # 等待Discord載入內嵌
+    try:
+        # 重新取得訊息以獲取最新的embeds
+        fresh_message = await ctx.channel.fetch_message(ctx.message.id)
+        
+        # 如果有Discord自動產生的embeds，就編輯訊息移除它們
+        if fresh_message.embeds:
+            # 保留訊息內容但移除embeds
+            await fresh_message.edit(content=fresh_message.content, embeds=[], suppress=True)
+    except discord.Forbidden:
+        print("沒有權限修改訊息")
+    except discord.NotFound:
+        print("訊息已被刪除")
+    except Exception as e:
+        print(f"處理內嵌時發生錯誤: {e}")
 
 class TaskTime(commands.Cog):
     everyday_time = dt.time(hour=3, minute=0, tzinfo=dt.timezone(timedelta(hours=8)))
@@ -128,6 +144,8 @@ class TaskTimes(commands.Cog):
                 embed.add_field(name="今天就是 114514！", value="哼!哼!啊啊啊啊啊!\n這麼臭的日子有存在的必要嗎?", inline=False)
             await channel.send(embed = embed)
             await channel.send(file=discord.File("./senpai.gif"))
+
+
 
 
 bot_token = os.environ['TOKEN']
