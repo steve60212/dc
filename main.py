@@ -1,36 +1,70 @@
 import os
 import discord 
-import datetime
+import datetime as dt
 from datetime import timedelta
 from discord.ext import tasks, commands
 import keep_alive
+from fb_helper import *
 
 intents = discord.Intents.default()
 intents.message_content = True  # 正確方式
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+ALLOWED_GUILD_IDs = [1300828046131200081, 1192478035966951606]
 
 @bot.event
 async def on_ready():
     await bot.add_cog(TaskTime(bot))
     #await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
+'''
+@bot.event
+async def on_message(message):
+    # 忽略bot自己的訊息
+    if message.author == bot.user:
+        return
+    
+    # 限制只在指定群組使用
+    if message.guild and message.guild.id != ALLOWED_GUILD_ID:
+        return
+    
+    # 檢查Facebook連結
+    urls = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
+    fb_urls = [url for url in urls if is_facebook_url(url)]
+    
+    if fb_urls:
+        await handle_facebook_video(message, fb_urls[0])
+    
+    await bot.process_commands(message)
+'''
+@bot.command(name='fb')
+async def manual_fb_info(ctx, *, url: str = None):
+    """手動取得Facebook影片資訊"""
+    if not url or not is_facebook_url(url):
+        embed = discord.Embed(
+            description="請提供Facebook影片連結\n範例：`!fb https://www.facebook.com/share/xxx`",
+            color=0x1877f2
+        )
+        await ctx.reply(embed=embed)
+        return
+    
+    await handle_facebook_video(ctx.message, url, delete_original=True)
 
 class TaskTime(commands.Cog):
-    everyday_time = datetime.time(hour=3, minute=0, tzinfo=datetime.timezone(timedelta(hours=8)))
+    everyday_time = dt.time(hour=3, minute=0, tzinfo=dt.timezone(timedelta(hours=8)))
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.everyday.start()
-        self.tz = datetime.timezone(timedelta(hours=8))
-        self.channel_ids = [1300828046131200081, 1192478035966951606]
+        self.tz = dt.timezone(timedelta(hours=8))
 
     @tasks.loop(time=everyday_time)
     async def everyday(self):
-        await self.send_everyday_message(self.channel_ids)
+        await self.send_everyday_message(ALLOWED_GUILD_IDs)
 
     async def send_everyday_message(self, channel_ids):
-        today = datetime.datetime.now(tz=self.tz).date()
-        target_date = datetime.date(today.year, 7, 29)
+        today = dt.datetime.now(tz=self.tz).date()
+        target_date = dt.date(today.year, 7, 29)
         days_str = ["四", "三", "二", "一"]
         days_left = (target_date - today).days
 
@@ -39,7 +73,7 @@ class TaskTime(commands.Cog):
             if channel:
                 embed = discord.Embed(
                     title="🛏 洞三洞洞 部隊起床",
-                    description=f"🕛 現在時間 【{datetime.datetime.now(tz=self.tz).time().strftime('%H:%M')}】",
+                    description=f"🕛 現在時間 【{dt.datetime.now(tz=self.tz).time().strftime('%H:%M')}】",
                     color=discord.Color.orange()
                 )
 
@@ -62,21 +96,21 @@ class TaskTime(commands.Cog):
 
 class TaskTimes(commands.Cog):
     every_hour_time = [
-            datetime.time(hour = i, minute = j, tzinfo = datetime.timezone(timedelta(hours = 8)))
+            dt.time(hour = i, minute = j, tzinfo = dt.timezone(timedelta(hours = 8)))
             for i in range(24) for j in range(0,60,2)
     ]
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.every_hour.start()
-        self.tz = datetime.timezone(timedelta(hours = 8))
+        self.tz = dt.timezone(timedelta(hours = 8))
         
     @tasks.loop(time = every_hour_time)
     async def every_hour(self):
         channel_id = 1300828046131200081
         channel = self.bot.get_channel(channel_id)
 
-        today = datetime.datetime.now(tz=self.tz).date()
-        target_date = datetime.date(today.year, 5, 14)
+        today = dt.datetime.now(tz=self.tz).date()
+        target_date = dt.date(today.year, 5, 14)
 
         # 計算倒數天數
         days_left = (target_date - today).days
@@ -84,7 +118,7 @@ class TaskTimes(commands.Cog):
         if channel:
             embed = discord.Embed(
                 title = "🛏 洞三洞洞 部隊起床",
-                description = f"🕛 現在時間 【{datetime.datetime.now(tz = self.tz).time().strftime('%H:%M')}】", 
+                description = f"🕛 現在時間 【{dt.datetime.now(tz = self.tz).time().strftime('%H:%M')}】", 
                 color = discord.Color.random()
             )
 
@@ -95,8 +129,8 @@ class TaskTimes(commands.Cog):
             await channel.send(embed = embed)
             await channel.send(file=discord.File("./senpai.gif"))
 
-
-
+os.environ["port"] = '8080'
+os.environ["TOKEN"] = 'MTM0Mzc3NTYzNzAyNjExMTUwOQ.GtH594.Yk5z1AMEBHfrBp1MckpfgRRo3w5zi0_HNcdG7w'
 bot_token = os.environ['TOKEN']
 keep_alive.keep_alive()
 bot.run(bot_token)
