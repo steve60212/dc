@@ -50,7 +50,7 @@ async def manual_fb_info(ctx, *, url: str = None):
         return
     
     await handle_facebook_video(ctx.message, url, delete_original=False)
-    await asyncio.sleep(2)  # 等待Discord載入內嵌
+    await asyncio.sleep(0.5)  # 等待Discord載入內嵌
     try:
         # 重新取得訊息以獲取最新的embeds
         fresh_message = await ctx.channel.fetch_message(ctx.message.id)
