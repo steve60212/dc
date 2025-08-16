@@ -129,8 +129,7 @@ class TaskTimes(commands.Cog):
             await channel.send(embed = embed)
             await channel.send(file=discord.File("./senpai.gif"))
 
-os.environ["port"] = '8080'
-os.environ["TOKEN"] = 'MTM0Mzc3NTYzNzAyNjExMTUwOQ.GtH594.Yk5z1AMEBHfrBp1MckpfgRRo3w5zi0_HNcdG7w'
+
 bot_token = os.environ['TOKEN']
 keep_alive.keep_alive()
 bot.run(bot_token)
