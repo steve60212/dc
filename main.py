@@ -5,38 +5,20 @@ from datetime import timedelta
 from discord.ext import tasks, commands
 import keep_alive
 from fb_helper import *
+import time
 
 intents = discord.Intents.default()
 intents.message_content = True  # 正確方式
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-ALLOWED_GUILD_IDs = [1300828046131200081, 1192478035966951606]
+ALLOWED_GUILD_IDs = [1192478035966951606]
 
 @bot.event
 async def on_ready():
     await bot.add_cog(TaskTime(bot))
     #await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
-'''
-@bot.event
-async def on_message(message):
-    # 忽略bot自己的訊息
-    if message.author == bot.user:
-        return
-    
-    # 限制只在指定群組使用
-    if message.guild and message.guild.id != ALLOWED_GUILD_ID:
-        return
-    
-    # 檢查Facebook連結
-    urls = re.findall(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message.content)
-    fb_urls = [url for url in urls if is_facebook_url(url)]
-    
-    if fb_urls:
-        await handle_facebook_video(message, fb_urls[0])
-    
-    await bot.process_commands(message)
-'''
+
 @bot.command(name='fb')
 async def manual_fb_info(ctx, *, url: str = None):
     """手動取得Facebook影片資訊"""
@@ -94,42 +76,13 @@ class TaskTime(commands.Cog):
         await self.send_everyday_message(test_channel_ids)
         await ctx.send("✅ 測試訊息已發送！")
 
-class TaskTimes(commands.Cog):
-    every_hour_time = [
-            dt.time(hour = i, minute = j, tzinfo = dt.timezone(timedelta(hours = 8)))
-            for i in range(24) for j in range(0,60,2)
-    ]
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot
-        self.every_hour.start()
-        self.tz = dt.timezone(timedelta(hours = 8))
-        
-    @tasks.loop(time = every_hour_time)
-    async def every_hour(self):
-        channel_id = 1300828046131200081
-        channel = self.bot.get_channel(channel_id)
+# 自動重啟功能
+while True:
+    try:
+        bot_token = os.environ['TOKEN']
+        keep_alive.keep_alive()
+        bot.run(bot_token)
+    except Exception as e:
+        print(f"Bot斷線，5秒後重啟: {e}")
+        time.sleep(5)
 
-        today = dt.datetime.now(tz=self.tz).date()
-        target_date = dt.date(today.year, 5, 14)
-
-        # 計算倒數天數
-        days_left = (target_date - today).days
-        
-        if channel:
-            embed = discord.Embed(
-                title = "🛏 洞三洞洞 部隊起床",
-                description = f"🕛 現在時間 【{dt.datetime.now(tz = self.tz).time().strftime('%H:%M')}】", 
-                color = discord.Color.random()
-            )
-
-            if days_left == 0:
-                embed.add_field(name="", value=f"距離 114514 還剩 {days_left} 天！", inline=False)
-            elif days_left > 0:
-                embed.add_field(name="今天就是 114514！", value="哼!哼!啊啊啊啊啊!\n這麼臭的日子有存在的必要嗎?", inline=False)
-            await channel.send(embed = embed)
-            await channel.send(file=discord.File("./senpai.gif"))
-
-
-bot_token = os.environ['TOKEN']
-keep_alive.keep_alive()
-bot.run(bot_token)
