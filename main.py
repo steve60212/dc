@@ -58,14 +58,14 @@ class TaskTime(commands.Cog):
                     description=f"🕛 現在時間 【{dt.datetime.now(tz=self.tz).time().strftime('%H:%M')}】",
                     color=discord.Color.orange()
                 )
-
+                '''
                 if days_left > 0 and days_left <= len(days_str):
                     embed.add_field(name="", value=f"屯懸賞第 {days_str[days_left-1]} 天！", inline=False)
                     await channel.send(file=discord.File("./wanted2.jpg"))
                 elif days_left == 0:
                     embed.add_field(name="🎉 今天「維修前」掃蕩懸賞", value="懸賞維修前掃光光\n哼！哼！啊啊啊啊啊！", inline=False)
                     await channel.send(file=discord.File("./wanted2.jpg"))
-
+                '''
                 
                 await channel.send(embed=embed)
                 await channel.send(file=discord.File("./3am.gif"))
@@ -76,13 +76,9 @@ class TaskTime(commands.Cog):
         await self.send_everyday_message(test_channel_ids)
         await ctx.send("✅ 測試訊息已發送！")
 
-# 自動重啟功能
-while True:
-    try:
-        bot_token = os.environ['TOKEN']
-        keep_alive.keep_alive()
-        bot.run(bot_token)
-    except Exception as e:
-        print(f"Bot斷線，5秒後重啟: {e}")
-        time.sleep(5)
+
+bot_token = os.environ['TOKEN']
+keep_alive.keep_alive()
+bot.run(bot_token)
+
 
