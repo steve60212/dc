@@ -4,7 +4,7 @@ import datetime as dt
 from datetime import timedelta
 from discord.ext import tasks, commands
 import keep_alive
-from fb_helper import *
+#from fb_helper import *
 import time
 
 intents = discord.Intents.default()
