@@ -18,7 +18,7 @@ async def on_ready():
     await bot.add_cog(TaskTime(bot))
     #await bot.add_cog(TaskTimes(bot))
     print(f"目前登入身份 --> {bot.user}")
-
+'''
 @bot.command(name='fb')
 async def manual_fb_info(ctx, *, url: str = None):
     """手動取得Facebook影片資訊"""
@@ -31,7 +31,7 @@ async def manual_fb_info(ctx, *, url: str = None):
         return
     
     await handle_facebook_video(ctx.message, url, delete_original=True)
-
+'''
 class TaskTime(commands.Cog):
     everyday_time = dt.time(hour=3, minute=0, tzinfo=dt.timezone(timedelta(hours=8)))
 
