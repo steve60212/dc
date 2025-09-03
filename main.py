@@ -78,7 +78,7 @@ class TaskTime(commands.Cog):
 
 
 bot_token = os.environ['TOKEN']
-keep_alive.keep_alive()
+keep_alive()
 bot.run(bot_token)
 
 
